@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- *
+ * 
  *       http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -88,9 +88,12 @@ public abstract class Api {
     /** Logger of the class. */
     private static final Logger LOG = LoggerFactory.getLogger(Api.class);
 
-    private static final ObjectMapper mapMsgPck = new ObjectMapper(new MessagePackFactory());
-    private static final ObjectMapper mapJson = new ObjectMapper();
+    /** The mapper for MsgPack objects. */
+    private static final ObjectMapper MAPPER_MSGPACK = new ObjectMapper(new MessagePackFactory());
+    /** The mapper for JSON objects. */
+    private static final ObjectMapper MAPPER_JSON = new ObjectMapper();
 
+    /** The operation ID. */
     private int opId = 0;
 
     /**
@@ -101,25 +104,53 @@ public abstract class Api {
         super();
     }
 
-    public byte[] toMsgPack() throws Exception {
-        return Api.mapMsgPck.writeValueAsBytes(this);
+    /**
+     * Method to generate the MsgPack representation of the object.
+     *
+     * @return the raw MsgPack object.
+     * @throws JsonProcessingException
+     *                                 Any serialization error.
+     */
+    public byte[] toMsgPack() throws JsonProcessingException {
+        return Api.MAPPER_MSGPACK.writeValueAsBytes(this);
     }
 
+    /**
+     * Method to generate the JSON representation of the object.
+     *
+     * @return the JSON object as string.
+     */
     public String toJson() {
         try {
-            return Api.mapJson.writeValueAsString(this);
+            return Api.MAPPER_JSON.writeValueAsString(this);
         } catch (final JsonProcessingException e) {
             return "error"; //$NON-NLS-1$
         }
     }
 
+    /**
+     * Method to create a POJO based on the given MsgPack raw message.
+     *
+     * @param bytes
+     *              the MsgPack to deserialize.
+     * @return The POJO associated to the MsgPack
+     * @throws IOException
+     *                     Any I/O error.
+     */
     public static Api fromMsgPack(final byte[] bytes) throws IOException {
-        return Api.mapMsgPck.readValue(bytes, Api.class);
+        return Api.MAPPER_MSGPACK.readValue(bytes, Api.class);
     }
 
+    /**
+     * Method to extract the operation ID from the raw message.
+     *
+     * @param bytes
+     *              the MsgPack raw message to parse.
+     * @return The operation ID from the message.
+     */
     public static int extractOpId(final byte[] bytes) {
         try {
-            final var tree = Api.mapMsgPck.readTree(bytes);
+            final var tree = Api.MAPPER_MSGPACK.readTree(bytes);
             if (tree.has("opId")) { //$NON-NLS-1$
                 final var opId = tree.get("opId"); //$NON-NLS-1$
                 return opId.asInt();
@@ -130,7 +161,13 @@ public abstract class Api {
         return 0;
     }
 
-    // will be set by bssci connector!
+    /**
+     * Setter method.
+     *
+     * @param opId
+     *             The new operation ID.
+     * @return the current object, after modification.
+     */
     public Api setOpId(final int opId) {
         this.opId = opId;
         return this;
@@ -141,6 +178,11 @@ public abstract class Api {
         return this.toJson();
     }
 
+    /**
+     * Method to create the response object to the current request.
+     *
+     * @return the response object or NULL if the request don't need any answer.
+     */
     public Api createResponse() {
         return null;
     }

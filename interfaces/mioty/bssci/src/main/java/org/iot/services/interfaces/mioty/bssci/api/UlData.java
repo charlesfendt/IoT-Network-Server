@@ -58,11 +58,49 @@ public class UlData extends Api {
     @Setter
     private boolean dlAck;
 
-    public UlData(final EUI64 epEui, final long rxTime, final int packetCnt, final double signalLevel,
-            final double noiseLevel, final int[] userData, final boolean rxOpen) {
-        this(epEui, rxTime, packetCnt, signalLevel, noiseLevel, userData, rxOpen, null);
+    /**
+     * Constructor with arguments.
+     *
+     * @param epEui
+     *                  the end-point EUI64.
+     * @param rxTime
+     *                  the reception time.
+     * @param packetCnt
+     *                  End Point packet counter.
+     * @param rssi
+     *                  The RSSI
+     * @param snr
+     *                  The SNR
+     * @param userData
+     *                  n Byte End Point user data, might be empty.
+     * @param dlOpen
+     *                  True if End Point downlink window is opened.
+     */
+    public UlData(final EUI64 epEui, final long rxTime, final int packetCnt, final double rssi, final double snr,
+            final int[] userData, final boolean dlOpen) {
+        this(epEui, rxTime, packetCnt, rssi, snr, userData, dlOpen, null);
     }
 
+    /**
+     * Constructor with arguments.
+     *
+     * @param epEui
+     *                  the end-point EUI64.
+     * @param rxTime
+     *                  the reception time.
+     * @param packetCnt
+     *                  End Point packet counter.
+     * @param rssi
+     *                  The RSSI
+     * @param snr
+     *                  The SNR
+     * @param userData
+     *                  n Byte End Point user data, might be empty.
+     * @param dlOpen
+     *                  True if End Point downlink window is opened.
+     * @param format
+     *                  The optional MPF byte.
+     */
     public UlData(final EUI64 epEui, final long rxTime, final int packetCnt, final double rssi, final double snr,
             final int[] userData, final boolean dlOpen, final Integer format) {
         super();

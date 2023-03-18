@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 /**
- * @author C.Fendt
+ * 
  */
-package org.iot.services.interfaces.lorawan.basicsstation;
+package org.iot.services.interfaces.mioty.bssci.endpoint;
 
