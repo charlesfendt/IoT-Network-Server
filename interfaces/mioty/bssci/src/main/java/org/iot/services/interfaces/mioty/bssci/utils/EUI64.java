@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *       http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,7 +18,6 @@ package org.iot.services.interfaces.mioty.bssci.utils;
 
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.Random;
 
 import org.apache.commons.lang3.Validate;
 
@@ -37,7 +36,7 @@ public final class EUI64 {
 
     public static EUI64 random() {
         final var bytes = new byte[8];
-        new Random().nextBytes(bytes);
+        UuidUtils.random(bytes);
         return new EUI64(new BigInteger(bytes).abs());
     }
 

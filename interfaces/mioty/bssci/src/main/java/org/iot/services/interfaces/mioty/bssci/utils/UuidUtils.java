@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *       http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,6 +17,8 @@
 package org.iot.services.interfaces.mioty.bssci.utils;
 
 import java.nio.ByteBuffer;
+import java.security.SecureRandom;
+import java.util.Random;
 import java.util.UUID;
 
 /**
@@ -28,6 +30,9 @@ public final class UuidUtils {
 
     /** size of the byte array associated to the UUID. */
     private static final int UUID_SIZE = 16;
+
+    /** random for the UID generation. */
+    private static final Random random = new SecureRandom();
 
     /**
      * Hidden constructor.
@@ -92,5 +97,17 @@ public final class UuidUtils {
         final var high = byteBuffer.getLong();
         final var low = byteBuffer.getLong();
         return new UUID(high, low);
+    }
+
+    /**
+     * method to fill a byte array with random data.
+     *
+     * @param bytes
+     *              the byte array to fill.
+     */
+    public static void random(final byte[] bytes) {
+        if (bytes != null) {
+            UuidUtils.random.nextBytes(bytes);
+        }
     }
 }
