@@ -109,12 +109,31 @@ public final class EUI64 {
         return false;
     }
 
+    @Override
+    public int hashCode() {
+        return this.value.hashCode();
+    }
+
+    /**
+     * MsgPack serializer class.
+     *
+     * @author FendtC
+     */
     @SuppressWarnings("serial")
     public static class EUI64Serializer extends StdSerializer<EUI64> {
+        /**
+         * Default constructor.
+         */
         public EUI64Serializer() {
             super(EUI64.class);
         }
 
+        /**
+         * Constructor with concrete class.
+         *
+         * @param t
+         *          concrete class.
+         */
         public EUI64Serializer(final Class<EUI64> t) {
             super(t);
         }
@@ -126,12 +145,26 @@ public final class EUI64 {
         }
     }
 
+    /**
+     * MsgPack deserializer class.
+     *
+     * @author FendtC
+     */
     @SuppressWarnings("serial")
     public static class EUI64Deserializer extends StdDeserializer<EUI64> {
+        /**
+         * Default constructor.
+         */
         public EUI64Deserializer() {
             super(EUI64.class);
         }
 
+        /**
+         * Constructor with concrete class.
+         *
+         * @param t
+         *          concrete class.
+         */
         public EUI64Deserializer(final Class<EUI64> t) {
             super(t);
         }
@@ -142,8 +175,4 @@ public final class EUI64 {
         }
     }
 
-    @Override
-    public int hashCode() {
-        return this.value.hashCode();
-    }
 }

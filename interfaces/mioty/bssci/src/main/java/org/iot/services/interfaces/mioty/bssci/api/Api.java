@@ -65,9 +65,15 @@ import org.iot.services.interfaces.mioty.bssci.api.subchannel.vm.VmActivateRsp;
 import org.iot.services.interfaces.mioty.bssci.api.subchannel.vm.VmDeactivate;
 import org.iot.services.interfaces.mioty.bssci.api.subchannel.vm.VmDeactivateCmp;
 import org.iot.services.interfaces.mioty.bssci.api.subchannel.vm.VmDeactivateRsp;
+import org.iot.services.interfaces.mioty.bssci.api.subchannel.vm.VmDlData;
+import org.iot.services.interfaces.mioty.bssci.api.subchannel.vm.VmDlDataCmp;
+import org.iot.services.interfaces.mioty.bssci.api.subchannel.vm.VmDlDataRsp;
 import org.iot.services.interfaces.mioty.bssci.api.subchannel.vm.VmStatus;
 import org.iot.services.interfaces.mioty.bssci.api.subchannel.vm.VmStatusCmp;
 import org.iot.services.interfaces.mioty.bssci.api.subchannel.vm.VmStatusRsp;
+import org.iot.services.interfaces.mioty.bssci.api.subchannel.vm.VmUlData;
+import org.iot.services.interfaces.mioty.bssci.api.subchannel.vm.VmUlDataCmp;
+import org.iot.services.interfaces.mioty.bssci.api.subchannel.vm.VmUlDataRsp;
 import org.msgpack.jackson.dataformat.MessagePackFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -144,6 +150,12 @@ import lombok.Getter;
         @JsonSubTypes.Type(value = VmStatus.class, name = "vm.status"),
         @JsonSubTypes.Type(value = VmStatusRsp.class, name = "vm.statusRsp"),
         @JsonSubTypes.Type(value = VmStatusCmp.class, name = "vm.statusCmp"),
+        @JsonSubTypes.Type(value = VmUlData.class, name = "vm.ulData"),
+        @JsonSubTypes.Type(value = VmUlDataRsp.class, name = "vm.ulDataRsp"),
+        @JsonSubTypes.Type(value = VmUlDataCmp.class, name = "vm.ulDataCmp"),
+        @JsonSubTypes.Type(value = VmDlData.class, name = "vm.dlData"),
+        @JsonSubTypes.Type(value = VmDlDataRsp.class, name = "vm.dlDataRsp"),
+        @JsonSubTypes.Type(value = VmDlDataCmp.class, name = "vm.dlDataCmp"),
 // ------------------------------------------------------------------------------
 })
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
