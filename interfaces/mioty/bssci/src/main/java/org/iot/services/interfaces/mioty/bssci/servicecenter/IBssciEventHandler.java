@@ -1,7 +1,7 @@
 /**
  *
  */
-package org.iot.services.interfaces.mioty.bssci.endpoint;
+package org.iot.services.interfaces.mioty.bssci.servicecenter;
 
 /**
  * Event handler definition.

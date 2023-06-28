@@ -1,7 +1,7 @@
 /**
  *
  */
-package org.iot.services.interfaces.mioty.bssci.endpoint;
+package org.iot.services.interfaces.mioty.bssci.servicecenter;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +14,7 @@ import org.iot.services.interfaces.mioty.bssci.api.Api;
 import org.iot.services.interfaces.mioty.bssci.api.main.Connect;
 import org.iot.services.interfaces.mioty.bssci.api.main.ConnectCmp;
 import org.iot.services.interfaces.mioty.bssci.api.main.ConnectRsp;
+import org.iot.services.interfaces.mioty.bssci.utils.BytesUtils;
 import org.iot.services.interfaces.mioty.bssci.utils.EUI64;
 import org.iot.services.interfaces.mioty.bssci.utils.UuidUtils;
 
@@ -58,7 +59,7 @@ public class BssciServiceCenterClient {
         try {
             final var payload = apiObj.toMsgPack();
             // create a 4 byte payload length, in little endian!
-            final var payloadsize = this.reverse(java.nio.ByteBuffer.allocate(4).putInt(payload.length).array());
+            final var payloadsize = BytesUtils.reverse(java.nio.ByteBuffer.allocate(4).putInt(payload.length).array());
 
             // it has to be 'this' static name, I do not know why...
             final var size = 8 + 4 + payload.length;// Identifier(8Byte) + payload size(4Byte) + payload(variable)
@@ -112,8 +113,7 @@ public class BssciServiceCenterClient {
             }
             // read payload size, 4 Bytes little endian!
             final var payloadSize = java.nio.ByteBuffer
-                    .wrap(BssciServiceCenterClient.this.reverse(BssciServiceCenterClient.this.in.readNBytes(4)))
-                    .getInt();
+                    .wrap(BytesUtils.reverse(BssciServiceCenterClient.this.in.readNBytes(4))).getInt();
             this.handle(Api.fromMsgPack(BssciServiceCenterClient.this.in.readNBytes(payloadSize)));
             return true;
         }
@@ -133,12 +133,4 @@ public class BssciServiceCenterClient {
         }
     }
 
-    private byte[] reverse(final byte[] bytes) {
-        for (int i = 0, j = bytes.length - 1; i < j; i++, j--) {
-            final var tmp = bytes[i];
-            bytes[i] = bytes[j];
-            bytes[j] = tmp;
-        }
-        return bytes;
-    }
 }

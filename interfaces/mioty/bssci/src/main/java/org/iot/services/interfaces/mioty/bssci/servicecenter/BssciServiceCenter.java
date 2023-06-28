@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.iot.services.interfaces.mioty.bssci.endpoint;
+package org.iot.services.interfaces.mioty.bssci.servicecenter;
 
 import java.io.IOException;
 import java.util.Optional;
