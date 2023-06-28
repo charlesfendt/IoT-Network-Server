@@ -30,21 +30,45 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
+/**
+ * EUI64 definition that is used as device UID.
+ *
+ * @author FendtC
+ */
 @JsonSerialize(using = EUI64.EUI64Serializer.class)
 @JsonDeserialize(using = EUI64.EUI64Deserializer.class)
 public final class EUI64 {
 
+    /**
+     * Method to create a random EUI64.
+     *
+     * @return The new random EUI64.
+     */
     public static EUI64 random() {
         final var bytes = new byte[8];
         UuidUtils.random(bytes);
         return new EUI64(new BigInteger(bytes).abs());
     }
 
+    /**
+     * Method to create an EUI64 based on its bytes representation.
+     *
+     * @param bytes
+     *              EUI64 as bytes.
+     * @return EUI64 object.
+     */
     public static EUI64 fix(final byte[] bytes) {
         Validate.isTrue(bytes.length == 8, "EUI64 needs to be a 8-Byte value, is: %d", bytes.length); //$NON-NLS-1$
         return new EUI64(new BigInteger(bytes));
     }
 
+    /**
+     * Method to create an EUI64 based on its hex-string representation.
+     *
+     * @param val
+     *            EUI64 as hex-string.
+     * @return EUI64 object.
+     */
     public static EUI64 fromHexString(final String val) {
         Validate.matchesPattern(val, "[a-fA-F0-9]{16}", "EUI64 needs to be a 16-character HEX value, is: %s", val); //$NON-NLS-1$ //$NON-NLS-2$
         return new EUI64(new BigInteger(val, 16));
@@ -55,12 +79,24 @@ public final class EUI64 {
         return String.format("%016X", this.value); //$NON-NLS-1$
     }
 
+    /** The EUI64 a big integer. */
     BigInteger value;
 
+    /**
+     * Constructor of the EUI64.
+     *
+     * @param v
+     *          The big-integer representation to use.
+     */
     private EUI64(final BigInteger v) {
         this.value = v;
     }
 
+    /**
+     * Method to retrieve the underlying big-integer representation of the object.
+     *
+     * @return the underlying big-integer representation of the object.
+     */
     public BigInteger asBI() {
         return this.value;
     }

@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *       http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,6 +18,56 @@ package org.iot.services.interfaces.mioty.bssci.api;
 
 import java.io.IOException;
 
+import org.iot.services.interfaces.mioty.bssci.api.main.Att;
+import org.iot.services.interfaces.mioty.bssci.api.main.AttCmp;
+import org.iot.services.interfaces.mioty.bssci.api.main.AttPrp;
+import org.iot.services.interfaces.mioty.bssci.api.main.AttPrpCmp;
+import org.iot.services.interfaces.mioty.bssci.api.main.AttPrpRsp;
+import org.iot.services.interfaces.mioty.bssci.api.main.AttRsp;
+import org.iot.services.interfaces.mioty.bssci.api.main.Connect;
+import org.iot.services.interfaces.mioty.bssci.api.main.ConnectCmp;
+import org.iot.services.interfaces.mioty.bssci.api.main.ConnectRsp;
+import org.iot.services.interfaces.mioty.bssci.api.main.Det;
+import org.iot.services.interfaces.mioty.bssci.api.main.DetCmp;
+import org.iot.services.interfaces.mioty.bssci.api.main.DetPrp;
+import org.iot.services.interfaces.mioty.bssci.api.main.DetPrpCmp;
+import org.iot.services.interfaces.mioty.bssci.api.main.DetPrpRsp;
+import org.iot.services.interfaces.mioty.bssci.api.main.DetRsp;
+import org.iot.services.interfaces.mioty.bssci.api.main.DlDataQue;
+import org.iot.services.interfaces.mioty.bssci.api.main.DlDataQueCmp;
+import org.iot.services.interfaces.mioty.bssci.api.main.DlDataQueRsp;
+import org.iot.services.interfaces.mioty.bssci.api.main.DlDataRes;
+import org.iot.services.interfaces.mioty.bssci.api.main.DlDataResCmp;
+import org.iot.services.interfaces.mioty.bssci.api.main.DlDataResRsp;
+import org.iot.services.interfaces.mioty.bssci.api.main.DlDataRev;
+import org.iot.services.interfaces.mioty.bssci.api.main.DlDataRevCmp;
+import org.iot.services.interfaces.mioty.bssci.api.main.DlDataRevRsp;
+import org.iot.services.interfaces.mioty.bssci.api.main.DlRxStat;
+import org.iot.services.interfaces.mioty.bssci.api.main.DlRxStatCmp;
+import org.iot.services.interfaces.mioty.bssci.api.main.DlRxStatQry;
+import org.iot.services.interfaces.mioty.bssci.api.main.DlRxStatQryCmp;
+import org.iot.services.interfaces.mioty.bssci.api.main.DlRxStatQryRsp;
+import org.iot.services.interfaces.mioty.bssci.api.main.DlRxStatRsp;
+import org.iot.services.interfaces.mioty.bssci.api.main.Error;
+import org.iot.services.interfaces.mioty.bssci.api.main.ErrorAck;
+import org.iot.services.interfaces.mioty.bssci.api.main.Ping;
+import org.iot.services.interfaces.mioty.bssci.api.main.PingCmp;
+import org.iot.services.interfaces.mioty.bssci.api.main.PingRsp;
+import org.iot.services.interfaces.mioty.bssci.api.main.Status;
+import org.iot.services.interfaces.mioty.bssci.api.main.StatusCmp;
+import org.iot.services.interfaces.mioty.bssci.api.main.StatusRsp;
+import org.iot.services.interfaces.mioty.bssci.api.main.UlData;
+import org.iot.services.interfaces.mioty.bssci.api.main.UlDataCmp;
+import org.iot.services.interfaces.mioty.bssci.api.main.UlDataRsp;
+import org.iot.services.interfaces.mioty.bssci.api.subchannel.vm.VmActivate;
+import org.iot.services.interfaces.mioty.bssci.api.subchannel.vm.VmActivateCmp;
+import org.iot.services.interfaces.mioty.bssci.api.subchannel.vm.VmActivateRsp;
+import org.iot.services.interfaces.mioty.bssci.api.subchannel.vm.VmDeactivate;
+import org.iot.services.interfaces.mioty.bssci.api.subchannel.vm.VmDeactivateCmp;
+import org.iot.services.interfaces.mioty.bssci.api.subchannel.vm.VmDeactivateRsp;
+import org.iot.services.interfaces.mioty.bssci.api.subchannel.vm.VmStatus;
+import org.iot.services.interfaces.mioty.bssci.api.subchannel.vm.VmStatusCmp;
+import org.iot.services.interfaces.mioty.bssci.api.subchannel.vm.VmStatusRsp;
 import org.msgpack.jackson.dataformat.MessagePackFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +88,9 @@ import lombok.Getter;
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "command")
 @JsonSubTypes({ //
+        // ------------------------------------------------------------------------------
+        // Main definition
+        //
         @JsonSubTypes.Type(value = Connect.class, name = "con"), //
         @JsonSubTypes.Type(value = ConnectRsp.class, name = "conRsp"), //
         @JsonSubTypes.Type(value = ConnectCmp.class, name = "conCmp"), //
@@ -78,7 +131,21 @@ import lombok.Getter;
         @JsonSubTypes.Type(value = DlRxStatQryRsp.class, name = "dlRxStatQryRsp"), //
         @JsonSubTypes.Type(value = DlRxStatQryCmp.class, name = "dlRxStatQryCmp"), //
         @JsonSubTypes.Type(value = Error.class, name = "error"), //
-        @JsonSubTypes.Type(value = ErrorAck.class, name = "errorAck") })
+        @JsonSubTypes.Type(value = ErrorAck.class, name = "errorAck"),
+        // ------------------------------------------------------------------------------
+        // Sub-Channel VM
+        //
+        @JsonSubTypes.Type(value = VmActivate.class, name = "vm.activate"),
+        @JsonSubTypes.Type(value = VmActivateRsp.class, name = "vm.activateRsp"),
+        @JsonSubTypes.Type(value = VmActivateCmp.class, name = "vm.activateCmp"),
+        @JsonSubTypes.Type(value = VmDeactivate.class, name = "vm.deactivate"),
+        @JsonSubTypes.Type(value = VmDeactivateRsp.class, name = "vm.deactivateRsp"),
+        @JsonSubTypes.Type(value = VmDeactivateCmp.class, name = "vm.deactivateCmp"),
+        @JsonSubTypes.Type(value = VmStatus.class, name = "vm.status"),
+        @JsonSubTypes.Type(value = VmStatusRsp.class, name = "vm.statusRsp"),
+        @JsonSubTypes.Type(value = VmStatusCmp.class, name = "vm.statusCmp"),
+// ------------------------------------------------------------------------------
+})
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -102,6 +169,15 @@ public abstract class Api {
     @JsonCreator
     public Api() {
         super();
+    }
+
+    /**
+     * Method to create the response object to the current request.
+     *
+     * @return the response object or NULL if the request don't need any answer.
+     */
+    public Api createResponse() {
+        return null;
     }
 
     /**
@@ -176,15 +252,6 @@ public abstract class Api {
     @Override
     public String toString() {
         return this.toJson();
-    }
-
-    /**
-     * Method to create the response object to the current request.
-     *
-     * @return the response object or NULL if the request don't need any answer.
-     */
-    public Api createResponse() {
-        return null;
     }
 
 }
