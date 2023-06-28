@@ -49,7 +49,7 @@ public class VmUlData extends Api {
     /** Reception noise level. */
     private double snr;
     /** AWGN equivalent reception SNR in dB, optional. */
-    private double eqSnr;
+    private Double eqSnr;
 
     /** Subpackets object with reception info for every subpacket, optional. */
     private VmUlDataSubpackets subpackets;

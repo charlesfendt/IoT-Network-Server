@@ -57,7 +57,7 @@ public class VmDlData extends Api {
     private int[] ulCrc;
 
     /** Transmission start time indicator, 21 to 16383, optional, default 128. */
-    private int tsi;
+    private Integer tsi;
     /** True to enable sync burst. */
     private boolean syncBurst;
     /** True to enable dual channel. */
