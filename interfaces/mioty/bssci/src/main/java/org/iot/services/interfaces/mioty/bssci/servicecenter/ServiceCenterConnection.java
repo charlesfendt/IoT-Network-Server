@@ -25,7 +25,7 @@ import lombok.Getter;
  *
  * @author FendtC
  */
-public class BssciServiceCenterClient {
+public class ServiceCenterConnection {
     private final BssciServiceCenter scs;
     @Getter
     private EUI64 eui;
@@ -34,7 +34,7 @@ public class BssciServiceCenterClient {
     private final InputStream in;
     private final OutputStream out;
 
-    protected BssciServiceCenterClient(final BssciServiceCenter scs, final Socket sock) throws Exception {
+    protected ServiceCenterConnection(final BssciServiceCenter scs, final Socket sock) throws Exception {
         this.scs = scs;
         this.opid = new AtomicInteger(-1);
         this.sock = sock;
@@ -45,15 +45,15 @@ public class BssciServiceCenterClient {
         new Thread(new Receiver()).start();
     }
 
-    public BssciServiceCenterClient send(final Api apiObj) {
+    public ServiceCenterConnection send(final Api apiObj) {
         return this.send(apiObj, this.opid.getAndDecrement());
     }
 
-    public BssciServiceCenterClient respond(final Api responseMsg, final Api receivedMsg) {
+    public ServiceCenterConnection respond(final Api responseMsg, final Api receivedMsg) {
         return this.send(responseMsg, receivedMsg.getOpId());
     }
 
-    protected BssciServiceCenterClient send(final Api apiObj, final int opId) {
+    protected ServiceCenterConnection send(final Api apiObj, final int opId) {
         this.scs.sending(this, apiObj);
         apiObj.setOpId(opId);
         try {
@@ -96,39 +96,39 @@ public class BssciServiceCenterClient {
                     // do nothing
                 }
             } catch (final Exception e) {
-                BssciServiceCenterClient.this.scs.error(BssciServiceCenterClient.this, e);
+                ServiceCenterConnection.this.scs.error(ServiceCenterConnection.this, e);
             }
-            BssciServiceCenterClient.this.disconnect();
+            ServiceCenterConnection.this.disconnect();
         }
 
         private boolean read() throws IOException {
-            final var header = BssciServiceCenterClient.this.in.readNBytes(8);
+            final var header = ServiceCenterConnection.this.in.readNBytes(8);
             if (header.length < 8) {
                 // socket closed on buffersize == 0
                 if (header.length > 0) {
-                    BssciServiceCenterClient.this.scs.error(BssciServiceCenterClient.this,
+                    ServiceCenterConnection.this.scs.error(ServiceCenterConnection.this,
                             new IllegalArgumentException("Invalid byte flow!")); //$NON-NLS-1$
                 }
                 return false;
             }
             // read payload size, 4 Bytes little endian!
             final var payloadSize = java.nio.ByteBuffer
-                    .wrap(BytesUtils.reverse(BssciServiceCenterClient.this.in.readNBytes(4))).getInt();
-            this.handle(Api.fromMsgPack(BssciServiceCenterClient.this.in.readNBytes(payloadSize)));
+                    .wrap(BytesUtils.reverse(ServiceCenterConnection.this.in.readNBytes(4))).getInt();
+            this.handle(Api.fromMsgPack(ServiceCenterConnection.this.in.readNBytes(payloadSize)));
             return true;
         }
 
         private void handle(final Api apiObj) {
             // connect messages
             if (apiObj instanceof Connect) {
-                BssciServiceCenterClient.this.eui = ((Connect) apiObj).getBsEui();
-                final var conRsp = new ConnectRsp(BssciServiceCenterClient.this.scs.getId(), false);
+                ServiceCenterConnection.this.eui = ((Connect) apiObj).getBsEui();
+                final var conRsp = new ConnectRsp(ServiceCenterConnection.this.scs.getId(), false);
                 conRsp.setSnScUuid(UuidUtils.convertUuidToBytes(null));
-                BssciServiceCenterClient.this.send(conRsp, 0);
+                ServiceCenterConnection.this.send(conRsp, 0);
             } else if (apiObj instanceof ConnectCmp) {
-                BssciServiceCenterClient.this.scs.connected(BssciServiceCenterClient.this);
+                ServiceCenterConnection.this.scs.connected(ServiceCenterConnection.this);
             } else {
-                BssciServiceCenterClient.this.scs.received(BssciServiceCenterClient.this, apiObj);
+                ServiceCenterConnection.this.scs.received(ServiceCenterConnection.this, apiObj);
             }
         }
     }

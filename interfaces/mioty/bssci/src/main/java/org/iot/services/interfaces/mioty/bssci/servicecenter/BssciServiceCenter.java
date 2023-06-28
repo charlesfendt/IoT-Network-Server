@@ -47,18 +47,18 @@ public class BssciServiceCenter {
     private String identifier;
 
     /** Message handler. */
-    private Optional<IBssciEventHandler<Void>> onConnectHandler;
+    private Optional<IServiceCenterConnectionEventHandler<Void>> onConnectHandler;
     /** Message handler. */
-    private Optional<IBssciEventHandler<Void>> onDisconnectHandler;
+    private Optional<IServiceCenterConnectionEventHandler<Void>> onDisconnectHandler;
     /** Message handler. */
-    private Optional<IBssciEventHandler<Api>> onIncommingHandler;
+    private Optional<IServiceCenterConnectionEventHandler<Api>> onIncommingHandler;
     /** Message handler. */
-    private Optional<IBssciEventHandler<Api>> onOutgoingHandler;
+    private Optional<IServiceCenterConnectionEventHandler<Api>> onOutgoingHandler;
     /** Message handler. */
-    private Optional<IBssciEventHandler<Exception>> onErrorHandler;
+    private Optional<IServiceCenterConnectionEventHandler<Exception>> onErrorHandler;
 
     /** List of connected clients. */
-    private final Set<BssciServiceCenterClient> clients = ConcurrentHashMap.newKeySet();
+    private final Set<ServiceCenterConnection> clients = ConcurrentHashMap.newKeySet();
 
     /**
      * Method to start the test server.
@@ -92,7 +92,7 @@ public class BssciServiceCenter {
         new Thread(() -> {
             try {
                 while (true) {
-                    this.clients.add(new BssciServiceCenterClient(this, this.serverSock.accept()));
+                    this.clients.add(new ServiceCenterConnection(this, this.serverSock.accept()));
                 }
             } catch (final Exception e) {
                 this.onErrorHandler.ifPresent(h -> h.handle(null, e));
@@ -112,7 +112,7 @@ public class BssciServiceCenter {
      *                handler.
      * @return the service center.
      */
-    public BssciServiceCenter onDisonnect(final IBssciEventHandler<Void> handler) {
+    public BssciServiceCenter onDisonnect(final IServiceCenterConnectionEventHandler<Void> handler) {
         this.onDisconnectHandler = Optional.of(handler);
         return this;
     }
@@ -123,7 +123,7 @@ public class BssciServiceCenter {
      * @param client
      *               the client connection.
      */
-    protected void disconnect(final BssciServiceCenterClient client) {
+    protected void disconnect(final ServiceCenterConnection client) {
         this.clients.remove(client);
         this.onDisconnectHandler.ifPresent(h -> h.handle(client, null));
     }
@@ -135,7 +135,7 @@ public class BssciServiceCenter {
      *                handler.
      * @return the service center.
      */
-    public BssciServiceCenter onConnect(final IBssciEventHandler<Void> handler) {
+    public BssciServiceCenter onConnect(final IServiceCenterConnectionEventHandler<Void> handler) {
         this.onConnectHandler = Optional.of(handler);
         return this;
     }
@@ -146,7 +146,7 @@ public class BssciServiceCenter {
      * @param client
      *               the client connection.
      */
-    protected void connected(final BssciServiceCenterClient client) {
+    protected void connected(final ServiceCenterConnection client) {
         this.onConnectHandler.ifPresent(h -> h.handle(client, null));
     }
 
@@ -157,7 +157,7 @@ public class BssciServiceCenter {
      *                handler.
      * @return the service center.
      */
-    public BssciServiceCenter onIncomming(final IBssciEventHandler<Api> handler) {
+    public BssciServiceCenter onIncomming(final IServiceCenterConnectionEventHandler<Api> handler) {
         this.onIncommingHandler = Optional.of(handler);
         return this;
     }
@@ -169,7 +169,7 @@ public class BssciServiceCenter {
      *                handler.
      * @return the service center.
      */
-    public BssciServiceCenter onOutgoing(final IBssciEventHandler<Api> handler) {
+    public BssciServiceCenter onOutgoing(final IServiceCenterConnectionEventHandler<Api> handler) {
         this.onOutgoingHandler = Optional.of(handler);
         return this;
     }
@@ -183,7 +183,7 @@ public class BssciServiceCenter {
      *               Object received.
      *
      */
-    protected void received(final BssciServiceCenterClient client, final Api apiObj) {
+    protected void received(final ServiceCenterConnection client, final Api apiObj) {
         this.onIncommingHandler.ifPresent(h -> h.handle(client, apiObj));
     }
 
@@ -196,7 +196,7 @@ public class BssciServiceCenter {
      *               Object received.
      *
      */
-    protected void sending(final BssciServiceCenterClient client, final Api apiObj) {
+    protected void sending(final ServiceCenterConnection client, final Api apiObj) {
         this.onOutgoingHandler.ifPresent(h -> h.handle(client, apiObj));
     }
 
@@ -207,7 +207,7 @@ public class BssciServiceCenter {
      *                handler.
      * @return the service center.
      */
-    public BssciServiceCenter onError(final IBssciEventHandler<Exception> handler) {
+    public BssciServiceCenter onError(final IServiceCenterConnectionEventHandler<Exception> handler) {
         this.onErrorHandler = Optional.of(handler);
         return this;
     }
@@ -221,7 +221,7 @@ public class BssciServiceCenter {
      *               error received.
      *
      */
-    protected void error(final BssciServiceCenterClient client, final Exception e) {
+    protected void error(final ServiceCenterConnection client, final Exception e) {
         this.onErrorHandler.ifPresent(h -> h.handle(client, e));
     }
 
@@ -244,7 +244,7 @@ public class BssciServiceCenter {
      *                     Any I/O error.
      */
     public void close() throws IOException {
-        this.clients.stream().forEach(BssciServiceCenterClient::disconnect);
+        this.clients.stream().forEach(ServiceCenterConnection::disconnect);
         if (this.serverSock != null) {
             this.serverSock.close();
         }

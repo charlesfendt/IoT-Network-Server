@@ -11,7 +11,7 @@ package org.iot.services.interfaces.mioty.bssci.servicecenter;
  *            Event type.
  */
 @FunctionalInterface
-public interface IBssciEventHandler<T> {
+public interface IServiceCenterConnectionEventHandler<T> {
 
     /**
      * Handling method.
@@ -21,5 +21,5 @@ public interface IBssciEventHandler<T> {
      * @param event
      *               event to handle
      */
-    void handle(BssciServiceCenterClient client, T event);
+    void handle(ServiceCenterConnection client, T event);
 }
